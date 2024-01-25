@@ -102,12 +102,9 @@ public class QuizServiceImpl implements QuizService {
 		  if(q == (questionRepository.getById(questionId) )) {
 			  return questionMapper.entityToDto(deleteQuestion(questionId));
 		  }
-		  else {
-			  throw new NotFoundException("Question not found in this Quiz.");
-		  }
 	  }
 	  
-	  return questionMapper.entityToDto(questionRepository.getById(questionId));
+	  throw new NotFoundException("Question not found in this Quiz.");
   }
   
   @Override
