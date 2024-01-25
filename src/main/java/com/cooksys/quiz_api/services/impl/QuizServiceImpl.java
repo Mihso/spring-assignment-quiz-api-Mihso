@@ -47,7 +47,6 @@ public class QuizServiceImpl implements QuizService {
   public QuestionResponseDto getRandomQuestion(Long a){
 	  QuizResponseDto current = quizMapper.entityToDto(quizRepository.getById(a));
 	  List<QuestionResponseDto> questions = current.questions;
-	  Math.random();
 	  return questions.get((int)(Math.random()*(questions.size())));
   }
   
