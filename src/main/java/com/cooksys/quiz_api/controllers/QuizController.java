@@ -34,12 +34,12 @@ public class QuizController {
   }
   
   @GetMapping("/{id}/random")
-  public QuestionResponseDto getRandomQuestion(@PathVariable Long id){
+  public QuestionResponseDto getRandomQuestion(@PathVariable Long id) throws NotFoundException{
 	  return quizService.getRandomQuestion(id);
   }
   
   @DeleteMapping("/{id}")
-  public QuizResponseDto deleteQuiz(@PathVariable Long id) {
+  public QuizResponseDto deleteQuiz(@PathVariable Long id) throws NotFoundException {
 	  return quizService.deleteQuiz(id);
   }
   

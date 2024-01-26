@@ -14,9 +14,9 @@ public interface QuizService {
 
   List<QuizResponseDto> getAllQuizzes();
   
-  QuestionResponseDto getRandomQuestion(Long a);
+  QuestionResponseDto getRandomQuestion(Long a) throws NotFoundException;
   
-  QuizResponseDto deleteQuiz(Long a);
+  QuizResponseDto deleteQuiz(Long a) throws NotFoundException;
   
   QuizResponseDto createQuiz(QuizRequestDto a);
   

@@ -44,7 +44,14 @@ public class QuizServiceImpl implements QuizService {
   }
   
   @Override
-  public QuestionResponseDto getRandomQuestion(Long a){
+  public QuestionResponseDto getRandomQuestion(Long a) throws NotFoundException{
+	  
+	  Optional<Quiz> checker = quizRepository.findById(a);
+	  
+	  if(checker.isEmpty()) {
+		  throw new NotFoundException("no Quiz with this id.");
+	  }
+	  
 	  QuizResponseDto current = quizMapper.entityToDto(quizRepository.getById(a));
 	  List<QuestionResponseDto> questions = current.questions;
 	  return questions.get((int)(Math.random()*(questions.size())));
@@ -84,8 +91,16 @@ public class QuizServiceImpl implements QuizService {
   }
   
   @Override
-  public QuizResponseDto deleteQuiz(Long a) {
-	  Quiz current = quizRepository.getById(a);
+  public QuizResponseDto deleteQuiz(Long a) throws NotFoundException {
+	  
+	  Optional<Quiz> checker = quizRepository.findById(a);
+	  
+	  if(checker.isEmpty()) {
+		  throw new NotFoundException("no Quiz with this id.");
+	  }
+	  
+	  Quiz current = checker.get();
+	  
 	  for(Question q: current.getQuestions()) {
 		  deleteQuestion(q.getId());
 	  }
@@ -96,7 +111,13 @@ public class QuizServiceImpl implements QuizService {
   
   @Override
   public QuestionResponseDto deleteQuestionFromQuiz(Long id, Long questionId) throws NotFoundException {
-	  Quiz current = quizRepository.getById(id);
+	  
+	  Optional<Quiz> checker = quizRepository.findById(id);
+	  
+	  if(checker.isEmpty()) {
+		  throw new NotFoundException("no Quiz with this id.");
+	  }
+	  Quiz current = checker.get();
 	  for(Question q: current.getQuestions()) {
 		  if(q == (questionRepository.getById(questionId) )) {
 			  return questionMapper.entityToDto(deleteQuestion(questionId));
@@ -133,7 +154,7 @@ public class QuizServiceImpl implements QuizService {
 	  result.setText(a.getText());
 	  result.setQuiz(quiz);
 	  List<Answer> answers = new ArrayList<>();
-	  QuestionResponseDto finall = questionMapper.entityToDto(questionRepository.saveAndFlush(result));
+	  questionRepository.saveAndFlush(result);
 	  for(AnswerRequestDto answ: a.getAnswers()) {
 		  answers.add(createAnswer(answ, result));
 	  }
@@ -147,13 +168,21 @@ public class QuizServiceImpl implements QuizService {
 	  answerRepository.delete(a);
   }
   
-  private Question deleteQuestion(Long id) {
-	  Question finall = questionRepository.getById(id);
-	  for(Answer a: finall.getAnswers()) {
+  private Question deleteQuestion(Long id) throws NotFoundException {
+	  
+	  Optional<Question> checker = questionRepository.findById(id);
+	  
+	  if(checker.isEmpty()) {
+		  throw new NotFoundException("no Question with this id.");
+	  }
+	  
+	  Question current = checker.get();
+
+	  for(Answer a: current.getAnswers()) {
 		  deleteAnswer(a);
 	  }
 	  questionRepository.deleteById(id);
-	  return finall;
+	  return current;
 	  
 	  
   }
